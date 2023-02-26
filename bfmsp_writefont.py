@@ -32,7 +32,6 @@ if __name__ == "__main__":
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
-    #ser.timeout = 0
     ser.xonxoff = False
     ser.rtscts = False
     ser.dsrdtr = False
@@ -47,16 +46,17 @@ if __name__ == "__main__":
         data = bytearray()
         for x in range(64):
             bytedata = f.readline().encode('utf-8')
+            if len(bytedata) == 0:
+                f.close()
+                ser.close()
+                exit()
             d = 0
             for x in bytedata:
-                #print('x:{:02x}'.format(x))
                 if (x == 0x30 or x == 0x31):
                     d = (d<<1) + (x & 0x1)
-                    #print('d:{:02x}'.format(d))
             data.append(d)
         writefont(ser, addr, data)
         time.sleep(0.05)
-
 
 
 
